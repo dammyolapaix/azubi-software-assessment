@@ -8,6 +8,7 @@ router
   .route('/')
   .post(
     validateRequest(category.validations.create),
+    category.middlewares.create,
     category.controllers.create
   )
 

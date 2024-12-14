@@ -5,7 +5,8 @@ import products from '../schema'
 
 const categories = pgTable('categories', {
   id: uuid().primaryKey().defaultRandom().notNull(),
-  name: varchar({ length: 255 }).notNull(),
+  name: varchar({ length: 255 }).unique().notNull(),
+  slug: varchar({ length: 255 }).unique().notNull(),
   ...timestamps,
 })
 

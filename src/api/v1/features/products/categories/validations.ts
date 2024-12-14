@@ -11,6 +11,8 @@ export default class CategoryValidations {
   })
 
   create = z.object({
-    body: this.createSchema,
+    body: this.createSchema.omit({
+      slug: true,
+    }),
   })
 }
