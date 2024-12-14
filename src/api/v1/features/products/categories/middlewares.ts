@@ -3,7 +3,7 @@ import slugify from 'slugify'
 import categoryInstance from '.'
 import asyncHandler from '../../../middlewares/async'
 import { ErrorResponse } from '../../../utils/errors'
-import { InsertCategory } from './types'
+import { InsertCategory, RetrieveCategoryRequestType } from './types'
 
 export default class CategoryMiddlewares {
   create = asyncHandler(
@@ -20,6 +20,36 @@ export default class CategoryMiddlewares {
 
       if (category)
         return next(new ErrorResponse(`Category already created`, 400))
+
+      next()
+    }
+  )
+
+  retrieve = asyncHandler(
+    async (
+      req: RetrieveCategoryRequestType,
+      res: Response,
+      next: NextFunction
+    ) => {
+      let categoryId: string | undefined = undefined
+
+      if (req.params.categoryId) categoryId = req.params.categoryId
+      if (req.body.categoryId) categoryId = req.body.categoryId
+
+      if (!req.params.categoryId && !req.body.categoryId)
+        return next(new ErrorResponse('CategoryId is required', 400))
+
+      req.category = await categoryInstance.services.retrieve({
+        id: categoryId!,
+      })
+
+      if (!req.category)
+        return next(
+          new ErrorResponse(
+            `Can't find category with the id of ${categoryId}`,
+            404
+          )
+        )
 
       next()
     }
