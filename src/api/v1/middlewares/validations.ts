@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
-import z from 'zod'
+import { z } from 'zod'
 import { convertQueryStringToObject } from '../utils/query-string-to-object'
 
-const validationMiddleware =
+const validateRequest =
   (schema: z.AnyZodObject) =>
   async (req: Request<{}, {}, {}, {}>, res: Response, next: NextFunction) => {
     req.query = convertQueryStringToObject(req.query)
@@ -32,4 +32,4 @@ const validationMiddleware =
     }
   }
 
-export default validationMiddleware
+export default validateRequest
