@@ -8,11 +8,26 @@ const validateRequest =
     req.query = convertQueryStringToObject(req.query)
 
     try {
-      schema.parse({
+      const validatedRequest = schema.parse({
         params: req.params,
         body: req.body,
         query: req.query,
       })
+
+      // Set the validated request as the request for the next middleware
+      req.params =
+        validatedRequest.params === undefined
+          ? req.params
+          : validatedRequest.params
+
+      req.body =
+        validatedRequest.body === undefined ? req.body : validatedRequest.body
+
+      req.query =
+        validatedRequest.query === undefined
+          ? req.query
+          : validatedRequest.query
+
       next()
     } catch (error) {
       let errors: {}[] = []
