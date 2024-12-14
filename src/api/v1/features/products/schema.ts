@@ -6,7 +6,8 @@ import images from './images/schema'
 
 const products = pgTable('products', {
   id: uuid().primaryKey().defaultRandom().notNull(),
-  name: varchar({ length: 255 }).notNull(),
+  name: varchar({ length: 255 }).unique().notNull(),
+  slug: varchar({ length: 255 }).unique().notNull(),
   price: integer().default(0),
   categoryId: uuid()
     .notNull()
