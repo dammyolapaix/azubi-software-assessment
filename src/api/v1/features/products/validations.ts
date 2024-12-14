@@ -27,4 +27,66 @@ export default class ProductValidations {
       isPublished: true,
     }),
   })
+
+  private listSchema = createInsertSchema(products, {
+    name: z.string().optional(),
+    price: z
+      .object({
+        eq: z.coerce
+          .number({
+            message: 'The price is required and it must be a number',
+          })
+          .transform((val) => val * 100)
+          .optional(),
+        lte: z.coerce
+          .number({
+            message: 'The price is required and it must be a number',
+          })
+          .transform((val) => val * 100)
+          .optional(),
+        gte: z.coerce
+          .number({
+            message: 'The price is required and it must be a number',
+          })
+          .transform((val) => val * 100)
+          .optional(),
+      })
+      .optional(),
+    categoryId: z
+      .string()
+      .uuid({ message: 'The categoryId must be a valid uuid' })
+      .optional(),
+    isPublished: z
+      .union([z.boolean(), z.string()])
+      .refine(
+        (value) => {
+          if (typeof value === 'string') {
+            return value === 'true' || value === 'false'
+          }
+          return true
+        },
+        {
+          message:
+            'isPublished query must be a Boolean or "true" or "false" as a string.',
+        }
+      )
+      .transform((value) => {
+        if (typeof value === 'string') {
+          return value === 'true'
+        }
+        return value
+      })
+      .optional(),
+  }).omit({
+    id: true,
+    slug: true,
+    createdAt: true,
+    updatedAt: true,
+    deletedAt: true,
+    imageId: true,
+  })
+
+  list = z.object({
+    query: this.listSchema,
+  })
 }
