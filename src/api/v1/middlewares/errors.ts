@@ -1,4 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
+import { StatusCode } from '../types'
+import { INTERNAL_ERROR_MESSAGE } from '../utils/constants'
 import { ErrorResponse } from '../utils/errors'
 
 export const errorHandler = (
@@ -7,8 +9,9 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  let statusCode: number = res.statusCode === 200 ? 500 : res.statusCode
-  let message = err.message ? err.message : 'Server Error'
+  let statusCode: StatusCode =
+    res.statusCode === 200 ? 500 : (res.statusCode as StatusCode)
+  let message = err.message ? err.message : INTERNAL_ERROR_MESSAGE
 
   // @ts-ignore
   if (err.code === '22P02' && err.routine === 'string_to_uuid') {

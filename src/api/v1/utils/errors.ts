@@ -1,4 +1,4 @@
-type StatusCode = 200 | 201 | 400 | 401 | 403 | 500
+import { StatusCode } from '../types'
 
 export class ErrorResponse extends Error {
   message: string
