@@ -19,7 +19,28 @@ router
   .route('/:id')
   .get(
     validateRequest(product.validations.retrieve),
+    product.middlewares.retrieve,
     product.controllers.retrieve
+  )
+  .put(
+    validateRequest(product.validations.update),
+    product.middlewares.retrieve,
+    category.middlewares.retrieve,
+    product.middlewares.update,
+    product.controllers.update
+  )
+  .delete(
+    validateRequest(product.validations.retrieve),
+    product.middlewares.retrieve,
+    product.controllers.delete
+  )
+
+router
+  .route('/:id/restore')
+  .post(
+    validateRequest(product.validations.retrieve),
+    product.middlewares.retrieve,
+    product.controllers.restore
   )
 
 export default router

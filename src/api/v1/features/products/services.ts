@@ -10,14 +10,16 @@ export default class ProductServices {
   /**
    * The retrieve function gets a single product
    */
-  retrieve = async (query: Partial<Pick<Product, 'slug' | 'id'>>) =>
+  retrieve = async (
+    query: Partial<Pick<Product, 'slug' | 'id'> & { isDeleted: boolean }>
+  ) =>
     await db.query.products.findFirst({
       where: and(
         or(
           query.id ? eq(products.id, query.id) : undefined,
           query.slug ? eq(products.slug, query.slug) : undefined
         ),
-        isNull(products.deletedAt)
+        query.isDeleted === true ? undefined : isNull(products.deletedAt)
       ),
     })
 
@@ -41,7 +43,7 @@ export default class ProductServices {
       ),
     })
 
-  update = async (productId: string, productInfo: InsertProduct) =>
+  update = async (productId: string, productInfo: Partial<InsertProduct>) =>
     await db
       .update(products)
       .set(productInfo)

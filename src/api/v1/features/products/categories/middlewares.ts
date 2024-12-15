@@ -36,20 +36,19 @@ export default class CategoryMiddlewares {
       if (req.params.categoryId) categoryId = req.params.categoryId
       if (req.body.categoryId) categoryId = req.body.categoryId
 
-      if (!req.params.categoryId && !req.body.categoryId)
-        return next(new ErrorResponse('CategoryId is required', 400))
+      if (req.params.categoryId || req.body.categoryId) {
+        req.category = await categoryInstance.services.retrieve({
+          id: categoryId!,
+        })
 
-      req.category = await categoryInstance.services.retrieve({
-        id: categoryId!,
-      })
-
-      if (!req.category)
-        return next(
-          new ErrorResponse(
-            `Can't find category with the id of ${categoryId}`,
-            404
+        if (!req.category)
+          return next(
+            new ErrorResponse(
+              `Can't find category with the id of ${categoryId}`,
+              404
+            )
           )
-        )
+      }
 
       next()
     }

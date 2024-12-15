@@ -3,6 +3,27 @@ import { z } from 'zod'
 import products from './schema'
 
 export default class ProductValidations {
+  private booleanSchema = z
+    .union([z.boolean(), z.string()])
+    .refine(
+      (value) => {
+        if (typeof value === 'string') {
+          return value === 'true' || value === 'false'
+        }
+        return true
+      },
+      {
+        message:
+          'isPublished query must be a Boolean or "true" or "false" as a string.',
+      }
+    )
+    .transform((value) => {
+      if (typeof value === 'string') {
+        return value === 'true'
+      }
+      return value
+    })
+
   private createSchema = createInsertSchema(products, {
     name: z
       .string({ required_error: 'The name field is required' })
@@ -56,27 +77,7 @@ export default class ProductValidations {
       .string()
       .uuid({ message: 'The categoryId must be a valid uuid' })
       .optional(),
-    isPublished: z
-      .union([z.boolean(), z.string()])
-      .refine(
-        (value) => {
-          if (typeof value === 'string') {
-            return value === 'true' || value === 'false'
-          }
-          return true
-        },
-        {
-          message:
-            'isPublished query must be a Boolean or "true" or "false" as a string.',
-        }
-      )
-      .transform((value) => {
-        if (typeof value === 'string') {
-          return value === 'true'
-        }
-        return value
-      })
-      .optional(),
+    isPublished: this.booleanSchema.optional(),
   }).omit({
     id: true,
     slug: true,
@@ -90,13 +91,45 @@ export default class ProductValidations {
     query: this.listSchema,
   })
 
+  private paramsSchema = z.object({
+    id: z
+      .string({
+        required_error: 'The id is required',
+      })
+      .uuid({ message: 'The id must be a valid uuid' }),
+  })
+
   retrieve = z.object({
-    params: z.object({
-      id: z
-        .string({
-          required_error: 'The id is required',
+    params: this.paramsSchema,
+  })
+
+  private updateSchema = createInsertSchema(products, {
+    name: z.string().optional(),
+    price: z.coerce
+      .number({
+        message: 'The price is required and it must be a number',
+      })
+      .min(0.1, 'The price must be greater than 0')
+      .transform((val) => val * 100)
+      .optional(),
+    categoryId: z
+      .string()
+      .uuid({ message: 'The categoryId must be a valid uuid' })
+      .optional(),
+    isPublished: this.booleanSchema.optional(),
+  })
+    .omit({ slug: true })
+    .superRefine(({ name, price, categoryId, isPublished }, { addIssue }) => {
+      if (!name && !price && !categoryId && !isPublished)
+        addIssue({
+          code: 'custom',
+          message:
+            'You must provide one of these to update a product. "name", "price", "categoryId" or "isPublished"',
         })
-        .uuid({ message: 'The id must be a valid uuid' }),
-    }),
+    })
+
+  update = z.object({
+    body: this.updateSchema,
+    params: this.paramsSchema,
   })
 }

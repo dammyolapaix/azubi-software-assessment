@@ -3,7 +3,7 @@ import productInstance from '.'
 import asyncHandler from '../../middlewares/async'
 import { INTERNAL_ERROR_MESSAGE } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/errors'
-import { InsertProduct, ListPolicy } from './types'
+import { InsertProduct, ListPolicy, RetrieveProductRequestType } from './types'
 
 export default class ProductControllers {
   create = asyncHandler(
@@ -28,7 +28,7 @@ export default class ProductControllers {
     ) => {
       const products = await productInstance.services.list(req.query)
 
-      if (!products) return next(new ErrorResponse(INTERNAL_ERROR_MESSAGE, 400))
+      if (!products) return next(new ErrorResponse(INTERNAL_ERROR_MESSAGE, 500))
 
       res.status(200).json({ success: true, products })
     }
@@ -36,19 +36,56 @@ export default class ProductControllers {
 
   retrieve = asyncHandler(
     async (
+      req: RetrieveProductRequestType,
+      res: Response,
+      next: NextFunction
+    ) => res.status(200).json({ success: true, product: req.product })
+  )
+
+  update = asyncHandler(
+    async (
+      req: Request<{ id: string }, {}, InsertProduct, {}>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const product = await productInstance.services.update(
+        req.params.id,
+        req.body
+      )
+
+      if (!product) return next(new ErrorResponse(INTERNAL_ERROR_MESSAGE, 500))
+
+      res.status(200).json({ success: true, product })
+    }
+  )
+
+  delete = asyncHandler(
+    async (
       req: Request<{ id: string }, {}, {}, {}>,
       res: Response,
       next: NextFunction
     ) => {
-      const product = await productInstance.services.retrieve(req.params)
+      const product = await productInstance.services.update(req.params.id, {
+        deletedAt: new Date().toISOString(),
+      })
 
-      if (!product)
-        return next(
-          new ErrorResponse(
-            `Can't find product with the id of ${req.params.id}`,
-            404
-          )
-        )
+      if (!product) return next(new ErrorResponse(INTERNAL_ERROR_MESSAGE, 500))
+
+      res.status(200).json({ success: true, product })
+    }
+  )
+
+  restore = asyncHandler(
+    async (
+      req: Request<{ id: string }, {}, {}, {}>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const product = await productInstance.services.update(req.params.id, {
+        deletedAt: null,
+      })
+
+      if (!product) return next(new ErrorResponse(INTERNAL_ERROR_MESSAGE, 500))
 
       res.status(200).json({ success: true, product })
     }
