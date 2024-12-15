@@ -1,5 +1,6 @@
 import express from 'express'
 import product from '.'
+import { uploadImage } from '../../middlewares/uploads'
 import validateRequest from '../../middlewares/validations'
 import category from './categories'
 
@@ -15,6 +16,13 @@ router
     product.controllers.create
   )
 
+const cpUpload = uploadImage.fields([
+  { name: 'desktop', maxCount: 1 },
+  { name: 'mobile', maxCount: 1 },
+  { name: 'tablet', maxCount: 1 },
+  { name: 'thumbnail', maxCount: 1 },
+])
+
 router
   .route('/:id')
   .get(
@@ -23,6 +31,7 @@ router
     product.controllers.retrieve
   )
   .put(
+    cpUpload,
     validateRequest(product.validations.update),
     product.middlewares.retrieve,
     category.middlewares.retrieve,

@@ -3,7 +3,13 @@ import productInstance from '.'
 import asyncHandler from '../../middlewares/async'
 import { INTERNAL_ERROR_MESSAGE } from '../../utils/constants'
 import { ErrorResponse } from '../../utils/errors'
-import { InsertProduct, ListPolicy, RetrieveProductRequestType } from './types'
+import {
+  InsertProduct,
+  InsertProductWithImage,
+  ListProduct,
+  ProductWithRelationships,
+  RetrieveProductRequestType,
+} from './types'
 
 export default class ProductControllers {
   create = asyncHandler(
@@ -22,7 +28,7 @@ export default class ProductControllers {
 
   list = asyncHandler(
     async (
-      req: Request<{}, {}, {}, ListPolicy>,
+      req: Request<{}, {}, {}, ListProduct>,
       res: Response,
       next: NextFunction
     ) => {
@@ -44,13 +50,16 @@ export default class ProductControllers {
 
   update = asyncHandler(
     async (
-      req: Request<{ id: string }, {}, InsertProduct, {}>,
+      req: Request<{ id: string }, {}, Partial<InsertProductWithImage>, {}> & {
+        product: ProductWithRelationships
+      },
       res: Response,
       next: NextFunction
     ) => {
       const product = await productInstance.services.update(
         req.params.id,
-        req.body
+        req.body,
+        req.product.image
       )
 
       if (!product) return next(new ErrorResponse(INTERNAL_ERROR_MESSAGE, 500))

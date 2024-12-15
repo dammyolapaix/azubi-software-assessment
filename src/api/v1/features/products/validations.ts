@@ -117,16 +117,7 @@ export default class ProductValidations {
       .uuid({ message: 'The categoryId must be a valid uuid' })
       .optional(),
     isPublished: this.booleanSchema.optional(),
-  })
-    .omit({ slug: true })
-    .superRefine(({ name, price, categoryId, isPublished }, { addIssue }) => {
-      if (!name && !price && !categoryId && !isPublished)
-        addIssue({
-          code: 'custom',
-          message:
-            'You must provide one of these to update a product. "name", "price", "categoryId" or "isPublished"',
-        })
-    })
+  }).omit({ slug: true })
 
   update = z.object({
     body: this.updateSchema,

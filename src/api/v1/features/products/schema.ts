@@ -22,9 +22,9 @@ export const productsRelations = relations(products, ({ one }) => ({
     fields: [products.categoryId],
     references: [categories.id],
   }),
-  image: one(categories, {
-    fields: [products.categoryId],
-    references: [categories.id],
+  image: one(images, {
+    fields: [products.imageId],
+    references: [images.id],
   }),
 }))
 
