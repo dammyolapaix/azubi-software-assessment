@@ -1,4 +1,8 @@
 export {
+  default as cartItems,
+  cartItemsRelations,
+} from '../features/carts/schema'
+export {
   default as categories,
   categoriesRelations,
 } from '../features/products/categories/schema'
