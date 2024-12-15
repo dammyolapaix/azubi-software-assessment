@@ -33,4 +33,35 @@ export default class CartControllers {
       res.status(200).json({ success: true, carts })
     }
   )
+
+  update = asyncHandler(
+    async (
+      req: Request<{ productId: string }, {}, Pick<CartItem, 'quantity'>, {}>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const cart = await cartInstance.services.update(
+        req.params.productId,
+        req.body
+      )
+
+      if (!cart) return next(new ErrorResponse(INTERNAL_ERROR_MESSAGE, 500))
+
+      res.status(200).json({ success: true, cart })
+    }
+  )
+
+  delete = asyncHandler(
+    async (
+      req: Request<{ productId: string }, {}, {}, {}>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const cart = await cartInstance.services.delete(req.params.productId)
+
+      if (!cart) return next(new ErrorResponse(INTERNAL_ERROR_MESSAGE, 500))
+
+      res.status(200).json({ success: true, cart })
+    }
+  )
 }

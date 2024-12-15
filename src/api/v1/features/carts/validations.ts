@@ -28,4 +28,29 @@ export default class CartValidations {
         .optional(),
     }),
   })
+
+  private paramsSchema = z.object({
+    productId: z
+      .string({
+        required_error: 'The productId is required',
+      })
+      .uuid({ message: 'The productId must be a valid uuid' }),
+  })
+
+  retrieve = z.object({
+    params: this.paramsSchema,
+  })
+
+  private updateSchema = z.object({
+    quantity: z
+      .number({
+        message: 'The quantity is required and it must be a number',
+      })
+      .min(1, 'The quantity must be a minimum of one'),
+  })
+
+  update = z.object({
+    body: this.updateSchema,
+    params: this.paramsSchema,
+  })
 }

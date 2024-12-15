@@ -33,8 +33,6 @@ export default class ProductMiddlewares {
     ) => {
       let productId: string | undefined = undefined
 
-      console.log(req.path)
-
       if (req.params.id) productId = req.params.id
       if (req.body.productId) productId = req.body.productId
 

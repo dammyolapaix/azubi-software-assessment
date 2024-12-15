@@ -15,4 +15,17 @@ router
     cart.controllers.create
   )
 
+router
+  .route('/:productId')
+  .put(
+    validateRequest(cart.validations.update),
+    cart.middlewares.retrieve,
+    cart.controllers.update
+  )
+  .delete(
+    validateRequest(cart.validations.retrieve),
+    cart.middlewares.retrieve,
+    cart.controllers.delete
+  )
+
 export default router
