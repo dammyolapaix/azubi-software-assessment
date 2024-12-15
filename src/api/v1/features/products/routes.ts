@@ -15,4 +15,11 @@ router
     product.controllers.create
   )
 
+router
+  .route('/:id')
+  .get(
+    validateRequest(product.validations.retrieve),
+    product.controllers.retrieve
+  )
+
 export default router

@@ -33,4 +33,24 @@ export default class ProductControllers {
       res.status(200).json({ success: true, products })
     }
   )
+
+  retrieve = asyncHandler(
+    async (
+      req: Request<{ id: string }, {}, {}, {}>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const product = await productInstance.services.retrieve(req.params)
+
+      if (!product)
+        return next(
+          new ErrorResponse(
+            `Can't find product with the id of ${req.params.id}`,
+            404
+          )
+        )
+
+      res.status(200).json({ success: true, product })
+    }
+  )
 }

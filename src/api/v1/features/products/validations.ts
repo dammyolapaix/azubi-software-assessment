@@ -3,7 +3,7 @@ import { z } from 'zod'
 import products from './schema'
 
 export default class ProductValidations {
-  createSchema = createInsertSchema(products, {
+  private createSchema = createInsertSchema(products, {
     name: z
       .string({ required_error: 'The name field is required' })
       .min(3, 'The name must be at least 3 characters')
@@ -88,5 +88,15 @@ export default class ProductValidations {
 
   list = z.object({
     query: this.listSchema,
+  })
+
+  retrieve = z.object({
+    params: z.object({
+      id: z
+        .string({
+          required_error: 'The id is required',
+        })
+        .uuid({ message: 'The id must be a valid uuid' }),
+    }),
   })
 }
