@@ -1,10 +1,86 @@
 import { NextFunction, Request, Response } from 'express'
 import userInstance from '.'
 import asyncHandler from '../../middlewares/async'
+import {
+  UNAUTHENTICATED_ERROR_MESSAGE,
+  UNAUTHORIZE_ERROR_MESSAGE,
+} from '../../utils/constants'
 import { ErrorResponse } from '../../utils/errors'
 import { InsertUser } from './types'
 
 export default class UserMiddlewares {
+  authRoute = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      let token: string | undefined
+
+      // Check if token exists in authorization headers
+      if (
+        req.headers.authorization &&
+        req.headers.authorization.startsWith('Bearer')
+      )
+        token = req.headers.authorization.split(' ')[1]
+
+      // Make sure token exist
+      if (!token || token === null || token === '' || token === 'null')
+        return next(new ErrorResponse(UNAUTHENTICATED_ERROR_MESSAGE, 401))
+
+      // Verify user by jwt
+      const { id: userId } = await userInstance.utils.verifyToken(token)
+
+      if (!userId)
+        return next(new ErrorResponse(UNAUTHENTICATED_ERROR_MESSAGE, 401))
+
+      const user = await userInstance.services.retrieve({
+        id: userId,
+      })
+
+      // Checking if the user exist
+      if (!user)
+        return next(new ErrorResponse(UNAUTHENTICATED_ERROR_MESSAGE, 401))
+
+      req.user = user
+
+      next()
+    }
+  )
+
+  publicRoute = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      let token: string | undefined
+
+      // Check if token exists in authorization headers
+      if (
+        req.headers.authorization &&
+        req.headers.authorization.startsWith('Bearer')
+      )
+        token = req.headers.authorization.split(' ')[1]
+
+      // Make sure token exist
+      if (token)
+        return next(new ErrorResponse('You are already logged in', 403))
+
+      next()
+    }
+  )
+
+  adminOnlyRoute = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      if (req.user!.role !== 'admin')
+        return next(new ErrorResponse(UNAUTHORIZE_ERROR_MESSAGE, 403))
+
+      next()
+    }
+  )
+
+  customerOnlyRoute = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      if (req.user!.role !== 'customer')
+        return next(new ErrorResponse(UNAUTHORIZE_ERROR_MESSAGE, 403))
+
+      next()
+    }
+  )
+
   register = asyncHandler(
     async (
       req: Request<{}, {}, InsertUser, {}>,
