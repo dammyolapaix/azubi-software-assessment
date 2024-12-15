@@ -14,3 +14,4 @@ export {
   default as products,
   productsRelations,
 } from '../features/products/schema'
+export { roleEnum, default as users } from '../features/users/schema'
