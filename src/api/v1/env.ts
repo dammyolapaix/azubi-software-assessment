@@ -15,6 +15,7 @@ const EnvSchema = z.object({
   PORT: z.coerce.number(),
   DATABASE_URL: z.string(),
   FRONTEND_URL: z.string(),
+  AUTH_SECRET: z.string(),
   AWS_BUCKET_NAME: z.string(),
   AWS_BUCKET_REGION: z.string(),
   AWS_ACCESS_KEY: z.string(),
