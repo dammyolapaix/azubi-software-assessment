@@ -7,6 +7,7 @@ const router = express.Router()
 
 router
   .route('/')
+  .get(validateRequest(cart.validations.list), cart.controllers.list)
   .post(
     validateRequest(cart.validations.create),
     product.middlewares.retrieve,

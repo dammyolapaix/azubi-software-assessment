@@ -19,4 +19,13 @@ export default class CartValidations {
   create = z.object({
     body: this.createSchema,
   })
+
+  list = z.object({
+    query: z.object({
+      productId: z
+        .string()
+        .uuid({ message: 'The productId must be a valid uuid' })
+        .optional(),
+    }),
+  })
 }

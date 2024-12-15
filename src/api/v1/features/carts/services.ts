@@ -12,9 +12,14 @@ export default class CartServices {
       where: eq(cartItems.productId, query.productId),
     })
 
-  list = async (query: Pick<CartItem, 'productId'>) =>
+  list = async (query: Partial<CartItem>) =>
     await db.query.cartItems.findMany({
-      where: eq(cartItems.productId, query.productId),
+      where: query.productId
+        ? eq(cartItems.productId, query.productId)
+        : undefined,
+      with: {
+        product: true,
+      },
     })
 
   update = async (productId: string, cartInfo: Pick<CartItem, 'quantity'>) =>
