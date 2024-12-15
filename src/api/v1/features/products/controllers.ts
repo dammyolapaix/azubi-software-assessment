@@ -18,11 +18,11 @@ export default class ProductControllers {
       res: Response,
       next: NextFunction
     ) => {
-      const [product] = await productInstance.services.create(req.body)
+      const [products] = await productInstance.services.create(req.body)
 
-      if (!product) return next(new ErrorResponse(INTERNAL_ERROR_MESSAGE, 500))
+      if (!products) return next(new ErrorResponse(INTERNAL_ERROR_MESSAGE, 500))
 
-      res.status(201).json({ success: true, product })
+      res.status(201).json({ success: true, products })
     }
   )
 
