@@ -17,7 +17,7 @@ export default class CartValidations {
   })
 
   create = z.object({
-    body: this.createSchema,
+    body: this.createSchema.omit({ userId: true }),
   })
 
   list = z.object({
