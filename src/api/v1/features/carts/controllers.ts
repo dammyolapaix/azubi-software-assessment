@@ -12,7 +12,10 @@ export default class CartControllers {
       res: Response,
       next: NextFunction
     ) => {
-      const [cart] = await cartInstance.services.create(req.body)
+      const [cart] = await cartInstance.services.create({
+        ...req.body,
+        userId: req.user!.id,
+      })
 
       if (!cart) return next(new ErrorResponse(INTERNAL_ERROR_MESSAGE, 500))
 
@@ -26,7 +29,10 @@ export default class CartControllers {
       res: Response,
       next: NextFunction
     ) => {
-      const carts = await cartInstance.services.list(req.query)
+      const carts = await cartInstance.services.list({
+        ...req.query,
+        userId: req.user!.id,
+      })
 
       if (!carts) return next(new ErrorResponse(INTERNAL_ERROR_MESSAGE, 500))
 
@@ -42,6 +48,7 @@ export default class CartControllers {
     ) => {
       const cart = await cartInstance.services.update(
         req.params.productId,
+        req.user!.id,
         req.body
       )
 
@@ -57,7 +64,10 @@ export default class CartControllers {
       res: Response,
       next: NextFunction
     ) => {
-      const cart = await cartInstance.services.delete(req.params.productId)
+      const cart = await cartInstance.services.delete(
+        req.params.productId,
+        req.user!.id
+      )
 
       if (!cart) return next(new ErrorResponse(INTERNAL_ERROR_MESSAGE, 500))
 
