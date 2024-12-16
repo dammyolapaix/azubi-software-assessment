@@ -23,6 +23,6 @@ router.use(
   cartRoutes
 )
 
-router.use('/users', user.middlewares.publicRoute, userRoutes)
+router.use('/users', userRoutes)
 
 export default router
