@@ -1,6 +1,7 @@
 import cors from 'cors'
 import * as dotenv from 'dotenv'
 import express from 'express'
+import limiter from './config/rate-limit'
 import env from './env'
 import { errorHandler, notFound } from './middlewares/errors'
 import routes from './routes'
@@ -15,7 +16,11 @@ app.use(cors({ origin: FRONTEND_URL }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+// Apply the rate limiting middleware to all requests.
+app.use(limiter)
+
 app.use('/api/v1', routes)
+
 app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
@@ -24,6 +29,7 @@ app.get('/', (req, res) => {
     },
   })
 })
+
 app.use(notFound)
 app.use(errorHandler)
 
