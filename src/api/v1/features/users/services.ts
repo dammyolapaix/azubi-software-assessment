@@ -8,14 +8,8 @@ export default class UserServices {
   /**
    * Register User
    */
-  register = async (userInfo: InsertUser) => {
-    const [user] = await db
-      .insert(users)
-      .values(userInfo)
-      .returning({ id: users.id })
-
-    return await this.retrieve({ id: user.id })
-  }
+  register = async (userInfo: InsertUser) =>
+    await db.insert(users).values(userInfo).returning({ id: users.id })
 
   /**
    * Get single user by query

@@ -12,7 +12,7 @@ export default class UserControllers {
       res: Response,
       next: NextFunction
     ) => {
-      const user = await userInstance.services.register(req.body)
+      const [user] = await userInstance.services.register(req.body)
 
       if (!user) return next(new ErrorResponse(INTERNAL_ERROR_MESSAGE, 500))
 
