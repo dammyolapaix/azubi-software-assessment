@@ -9,9 +9,7 @@ dotenv.config()
 
 const app = express()
 
-const { PORT, FRONTEND_URL } = env
-
-app.use(cors({ origin: FRONTEND_URL }))
+app.use(cors({ origin: env.FRONTEND_URL }))
 // Middleware to parse JSON request bodies
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -33,6 +31,4 @@ app.get('/', (req, res) => {
 app.use(notFound)
 app.use(errorHandler)
 
-app.listen(PORT, async () => {
-  console.log(`App started on port ${PORT}`)
-})
+export default app

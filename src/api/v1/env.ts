@@ -14,6 +14,7 @@ const EnvSchema = z.object({
   NODE_ENV: z.string().default('development'),
   PORT: z.coerce.number(),
   DATABASE_URL: z.string(),
+  TEST_DATABASE_URL: z.string(),
   FRONTEND_URL: z.string(),
   AUTH_SECRET: z.string(),
   AWS_BUCKET_NAME: z.string(),
@@ -22,6 +23,7 @@ const EnvSchema = z.object({
   AWS_SECRET_ACCESS_KEY: z.string(),
   DB_MIGRATING: stringBoolean,
   DB_SEEDING: stringBoolean,
+  TESTING: stringBoolean,
 })
 
 export type EnvSchema = z.infer<typeof EnvSchema>
