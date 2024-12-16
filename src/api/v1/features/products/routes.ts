@@ -2,6 +2,7 @@ import express from 'express'
 import product from '.'
 import { uploadImage } from '../../middlewares/uploads'
 import validateRequest from '../../middlewares/validations'
+import user from '../users'
 import category from './categories'
 
 const router = express.Router()
@@ -10,6 +11,8 @@ router
   .route('/')
   .get(validateRequest(product.validations.list), product.controllers.list)
   .post(
+    user.middlewares.authRoute,
+    user.middlewares.adminOnlyRoute,
     validateRequest(product.validations.create),
     category.middlewares.retrieve,
     product.middlewares.create,
@@ -31,6 +34,8 @@ router
     product.controllers.retrieve
   )
   .put(
+    user.middlewares.authRoute,
+    user.middlewares.adminOnlyRoute,
     cpUpload,
     validateRequest(product.validations.update),
     product.middlewares.retrieve,
@@ -39,6 +44,8 @@ router
     product.controllers.update
   )
   .delete(
+    user.middlewares.authRoute,
+    user.middlewares.adminOnlyRoute,
     validateRequest(product.validations.retrieve),
     product.middlewares.retrieve,
     product.controllers.delete
@@ -47,6 +54,8 @@ router
 router
   .route('/:id/restore')
   .post(
+    user.middlewares.authRoute,
+    user.middlewares.adminOnlyRoute,
     validateRequest(product.validations.retrieve),
     product.middlewares.retrieve,
     product.controllers.restore

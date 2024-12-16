@@ -14,12 +14,7 @@ router.use(
   categoryRoutes
 )
 
-router.use(
-  '/products',
-  user.middlewares.authRoute,
-  user.middlewares.adminOnlyRoute,
-  productRoutes
-)
+router.use('/products', productRoutes)
 
 router.use(
   '/carts',
