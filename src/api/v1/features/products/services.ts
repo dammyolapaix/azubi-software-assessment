@@ -86,6 +86,8 @@ export default class ProductServices {
         image: productImage,
       }
     }
+
+    return queryResults
   }
 
   /**
