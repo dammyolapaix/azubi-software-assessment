@@ -16,6 +16,14 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.use('/api/v1', routes)
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    info: {
+      doc: 'https://www.postman.com/interstellar-meadow-654430/workspace/azubi-assessment-api-for-product-list-and-shopping-cart',
+    },
+  })
+})
 app.use(notFound)
 app.use(errorHandler)
 
