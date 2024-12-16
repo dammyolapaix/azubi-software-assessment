@@ -5,5 +5,5 @@ module.exports = {
     '^.+.tsx?$': ['ts-jest', {}],
   },
   preset: 'ts-jest',
-  setupFilesAfterEnv: ['<rootDir>/src/api/v1/setupFilesAfterEnv.ts'],
+  // setupFilesAfterEnv: ['<rootDir>/src/api/v1/setupFilesAfterEnv.ts'],
 }
