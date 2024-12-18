@@ -4,9 +4,9 @@ import * as schema from './db/schema'
 
 afterAll(async () => {
   for (const table of [
+    schema.cartItems,
     schema.products,
     schema.categories,
-    schema.cartItems,
     schema.users,
   ]) {
     await db.delete(table)
